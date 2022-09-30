@@ -3,6 +3,7 @@ library(terra)
 library(rnoaa)
 library(dplyr)
 library(lubridate)
+library(ggplot2)
 #install.packages('sf')
 library(sf)
 stationsny <- read.csv("C:\\Users\\foliv\\Documents\\thesis data\\station_info.csv")
@@ -16,6 +17,12 @@ counties.points <- st_as_sf(stationsny, coords = c("long","lat"),
 counties.p <- st_transform(counties.points,st_crs(cny))
 plot(cny$geometry)
 plot(counties.p$geometry, add=TRUE, pch=19)
+#plots city and town boundaries
+cities <- st_read("C:\\Users\\foliv\\Documents\\thesis data\\NYS_Civil_Boundaries.shp\\Cities_Towns.shp")
+cny_cities <- cities[cities$COUNTY =="Oneida"|
+                       cities$COUNTY =="Madison"|
+                       cities$COUNTY == "Onondaga",]
+plot(cny_cities$geometry)
 #sorts out stations in our tricounty area
 stations <- st_intersection(counties.p, cny)
 #plot to visualize this was done correctly
@@ -32,3 +39,7 @@ daily_ghcnd <- meteo_pull_monitors(
   var = "all")
 #removes any rows where prcp is NA
 w_prcp_daily <- subset(daily_ghcnd, !is.na(prcp))
+w_prcp_daily[w_prcp_daily$COUNTY =="Oneida"|
+                       cities$COUNTY =="Madison"|
+                       cities$COUNTY == "Onondaga",]
+categories <- unique(yourDataFrame$yourColumn)

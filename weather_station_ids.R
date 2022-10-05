@@ -15,19 +15,19 @@ cny <- counties[counties$NAME =="Oneida"|
 counties.points <- st_as_sf(stationsny, coords = c("long","lat"), 
                             crs=4326)
 counties.p <- st_transform(counties.points,st_crs(cny))
+#plots tricounty boundaries
 plot(cny$geometry)
 plot(counties.p$geometry, add=TRUE, pch=19)
-#plots city and town boundaries
+#reads city boundary shape file and sorts out cities within tricounty area
 cities <- st_read("C:\\Users\\foliv\\Documents\\thesis data\\NYS_Civil_Boundaries.shp\\Cities_Towns.shp")
 cny_cities <- cities[cities$COUNTY =="Oneida"|
                        cities$COUNTY =="Madison"|
                        cities$COUNTY == "Onondaga",]
-plot(cny_cities$geometry)
 #sorts out stations in our tricounty area
 stations <- st_intersection(counties.p, cny)
-#plot to visualize this was done correctly
-plot(cny$geometry)
-plot(stations$geometry, add =TRUE)
+#plot with city/town boundaries with stations
+plot(cny_cities$geometry)
+plot(stations$geometry, add =TRUE, pch=19)
 #vector with only station ids
 id_station <- stations$station_id
 #pull data from stations using rnoaa
@@ -39,7 +39,11 @@ daily_ghcnd <- meteo_pull_monitors(
   var = "all")
 #removes any rows where prcp is NA
 w_prcp_daily <- subset(daily_ghcnd, !is.na(prcp))
-w_prcp_daily[w_prcp_daily$COUNTY =="Oneida"|
-                       cities$COUNTY =="Madison"|
-                       cities$COUNTY == "Onondaga",]
-categories <- unique(yourDataFrame$yourColumn)
+all_stations <- ghcnd_stations()
+hillside <- meteo_distance(
+  all_stations,
+  43.3570138,-75.3873953,units = "deg",
+  radius = 30,
+  limit = NULL)
+#data frame with the last year of recorded data for cny stations
+cny_stations_years <- all_stations[all_stations$id %in% id_station,]

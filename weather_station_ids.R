@@ -47,3 +47,6 @@ hillside <- meteo_distance(
   limit = NULL)
 #data frame with the last year of recorded data for cny stations
 cny_stations_years <- all_stations[all_stations$id %in% id_station,]
+#adds column for active vs nonactive weather stations
+cny_stations_years <- cny_stations_years %>%
+  mutate(status = if_else(.$last_year < 2022, "Nonactive", "Active"))

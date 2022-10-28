@@ -4,6 +4,8 @@ library(rnoaa)
 library(dplyr)
 library(lubridate)
 library(ggplot2)
+#install.packages('tmap')
+library(tmap)
 #install.packages('sf')
 library(sf)
 stationsny <- read.csv("C:\\Users\\foliv\\Documents\\thesis data\\station_info.csv")
@@ -12,7 +14,8 @@ plot(counties$geometry)
 cny <- counties[counties$NAME =="Oneida"|
                   counties$NAME =="Madison"|
                   counties$NAME == "Onondaga",]
-counties.points <- st_as_sf(stationsny, coords = c("long","lat"), 
+all_stations <- ghcnd_stations()
+counties.points <- st_as_sf(all_stations, coords = c("longitude","latitude"), 
                             crs=4326)
 counties.p <- st_transform(counties.points,st_crs(cny))
 #plots tricounty boundaries
@@ -39,7 +42,6 @@ daily_ghcnd <- meteo_pull_monitors(
   var = "all")
 #removes any rows where prcp is NA
 w_prcp_daily <- subset(daily_ghcnd, !is.na(prcp))
-all_stations <- ghcnd_stations()
 hillside <- meteo_distance(
   all_stations,
   43.3570138,-75.3873953,units = "deg",
@@ -50,3 +52,58 @@ cny_stations_years <- all_stations[all_stations$id %in% id_station,]
 #adds column for active vs nonactive weather stations
 cny_stations_years <- cny_stations_years %>%
   mutate(status = if_else(.$last_year < 2022, "Nonactive", "Active"))
+#tmap for tricounty area with city boundaries and stations
+counties_cities <- tm_shape(cny_cities)+
+  tm_borders(lwd=1, #line thickness
+             lty=1, col= "darkred")+ #line type
+tm_shape(cny)+
+  tm_borders(lwd=2, lty=1, col= "red")+
+tm_shape(stations)+
+  tm_dots(size= 0.3, title= "NWS Weather Stations")+
+  tm_scale_bar(position=c("left", "bottom"))+
+  tm_compass(position = c("left", "top"), size = 1)
+  
+tmap_save(counties_cities, "C:\\Users\\foliv\\Documents\\thesis data\\cities_counties.png", 
+          width= 5, height= 5, units= "in", dpi= 200)
+min(stations$first_year)
+max(stations$last_year)
+
+year <- seq(1893, 2022)
+year_sub <- list()
+
+mapsave <- list()
+
+
+for(i in 1:length(year)){
+  year_sub[[i]] <- stations[year[i] >= stations$first_year & 
+                       year[i] <= stations$last_year,]
+  mapsave <- tm_shape(cny)+
+    tm_borders(lwd=2, lty=1, col= "red")+
+    tm_shape(year_sub[[i]])+
+    tm_dots(size= 0.3, title= "NWS Weather Stations")+
+    tm_scale_bar(position=c("left", "top"))+
+    tm_compass(position = c("left", "bottom"), size = 1)+
+    tm_layout(title= year[i])
+  
+  tmap_save(mapsave, paste0("C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year",year[i],".png"), 
+            width= 5, height= 5, units= "in", dpi= 200)
+  
+  
+  
+  
+  
+  
+  
+}
+
+
+
+
+
+
+
+
+
+storm_mad <- read.csv("C:\\Users\\foliv\\Documents\\thesis data\\storm\\madison_50_21.csv")
+storm_onon <- read.csv("C:\\Users\\foliv\\Documents\\thesis data\\storm\\onondaga_50_21.csv")
+storm_onei <- read.csv("C:\\Users\\foliv\\Documents\\thesis data\\storm\\oneida_50_21.csv")

@@ -88,22 +88,35 @@ for(i in 1:length(year)){
   tmap_save(mapsave, paste0("C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year",year[i],".png"), 
             width= 5, height= 5, units= "in", dpi= 200)
   
-  
-  
-  
-  
-  
-  
 }
 
-
-
-
-
-
-
-
-
+#read in csv with storm database for madison, oneida, and onondaga
 storm_mad <- read.csv("C:\\Users\\foliv\\Documents\\thesis data\\storm\\madison_50_21.csv")
 storm_onon <- read.csv("C:\\Users\\foliv\\Documents\\thesis data\\storm\\onondaga_50_21.csv")
 storm_onei <- read.csv("C:\\Users\\foliv\\Documents\\thesis data\\storm\\oneida_50_21.csv")
+
+#subset flash floods that have locations and make a geometry column
+loc_storm_mad <- subset(storm_mad, !is.na(BEGIN_LON))
+p_storm_mad <- st_as_sf(loc_storm_mad, coords = c("BEGIN_LON","BEGIN_LAT"), 
+                            crs=4326)
+#onondaga flash floods
+loc_storm_onon <- subset(storm_onon, !is.na(BEGIN_LON))
+p_storm_onon <- st_as_sf(loc_storm_onon, coords = c("BEGIN_LON","BEGIN_LAT"), 
+                        crs=4326)
+#oneida flash floods
+loc_storm_onei <- subset(storm_onei, !is.na(BEGIN_LON))
+p_storm_onei <- st_as_sf(loc_storm_onei, coords = c("BEGIN_LON","BEGIN_LAT"), 
+                        crs=4326)
+tm_shape(cny_cities)+
+  tm_borders(lwd=1, #line thickness
+             lty=1, col= "darkred")+ #line type
+  tm_shape(cny)+
+  tm_borders(lwd=2, lty=1, col= "red")+
+  tm_shape(stations)+
+  tm_dots(size= 0.3, title= "NWS Weather Stations")+
+  tm_shape(p_storm_mad)+
+  tm_dots(size= 0.3, title= "Madison Flash Floods", col= "blue")+
+  tm_scale_bar(position=c("left", "bottom"))+
+  tm_compass(position = c("left", "top"), size = 1)+
+  tm_layout(legend.show = TRUE)+
+  tm_legend(position = c("left", "top"))

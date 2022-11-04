@@ -111,8 +111,6 @@ img_joined <- image_join(img_list)
 # animate at 2 frames per second
 img_animated <- image_animate(img_joined, fps = 4)
 
-# view animated image
-img_animated
 
 # save
 image_write(image = img_animated,

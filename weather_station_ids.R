@@ -73,14 +73,43 @@ year_sub <- list()
 
 mapsave <- list()
 
+prcp_stations <- stations[stations$element == "PRCP",]
+prcp_stations$total_years <- prcp_stations$last_year - prcp_stations$first_year
+prcp_stations$current_year <- ifelse(prcp_stations$last_year == 2022, 1,0)
+
+year_sub_current <- list()
+colorv <- character()
 
 for(i in 1:length(year)){
-  year_sub[[i]] <- stations[year[i] >= stations$first_year & 
-                              year[i] <= stations$last_year,]
+  year_sub[[i]] <- prcp_stations[year[i] >= prcp_stations$first_year & 
+                              year[i] <= prcp_stations$last_year,]
+
+  if(nrow(prcp_stations%>%
+          filter(year[i] >= first_year & 
+                 year[i] <= last_year&
+                 current_year == 1&
+                 total_years >50))!=0){
+  year_sub_current[[i]] <- prcp_stations%>%
+      filter(year[i] >= first_year & 
+                                   year[i] <= last_year&
+                                     current_year == 1&
+                                     total_years >50)}else{
+                                       year_sub_current[[i]] <- prcp_stations[year[i] >= prcp_stations$first_year & 
+                                        year[i] <= prcp_stations$last_year,]}
+  if(nrow(prcp_stations%>%
+          filter(year[i] >= first_year & 
+                 year[i] <= last_year&
+                 current_year == 1&
+                 total_years >50))!=0){
+  colorv[i] <- "black"}else{
+    colorv[i] <- "white"
+  }
   mapsave <- tm_shape(cny, unit= "mi")+
     tm_borders(lwd=2, lty=1, col= "black")+
     tm_shape(year_sub[[i]])+
     tm_dots(size= 0.3, title= "NWS Weather Stations", col= "red")+
+    tm_shape(year_sub_current[[i]])+
+    tm_dots(size= 0.3, col= colorv[i])+
     tm_layout(title= year[i])+
     tm_shape(cny_cities)+
     tm_borders(lwd=1, #line thickness
@@ -98,7 +127,7 @@ for(i in 1:length(year)){
 }
 
 
-install.packages("magick")
+#install.packages("magick")
 library(magick)
 # list file names and read in
 imgs <- list.files(path = "C:\\Users\\foliv\\Documents\\thesis data\\
@@ -108,9 +137,8 @@ img_list <- lapply(imgs, image_read)
 # join the images together
 img_joined <- image_join(img_list)
 
-# animate at 2 frames per second
+# animate at 4 frames per second
 img_animated <- image_animate(img_joined, fps = 4)
-
 
 # save
 image_write(image = img_animated,
@@ -143,17 +171,21 @@ tm_shape(cny_cities, unit= "mi")+
   tm_shape(cny)+
   tm_borders(lwd=2, lty=1, col= "black")+
   tm_shape(stations)+
-  tm_dots(size= 0.3, title= "NWS Weather Stations", col="red")+
+  tm_dots(size= 0.3, title= "NWS Stations", col="red")+
   tm_shape(p_storm_mad)+
   tm_dots(size= 0.3, title= "Madison Flash Floods", col= "blue")+
   tm_shape(p_storm_onei)+
   tm_dots(size= 0.3, title= "Oneida Flash Floods", col= "blue")+
   tm_shape(p_storm_onon)+
   tm_dots(size= 0.3, title= "Onondaga Flash Floods", col= "blue")+
-  tm_scale_bar(position=c("center", "top"), text.size= 1)+
+  tm_scale_bar(position=c("left", "BOTTOM"), text.size= 1)+
   tm_compass(position = c("RIGHT", "bottom"), size = 3)+
-  tm_add_legend(title= "Legend", type = "symbol", labels= c("NWS weather stations", "Flash flood events"), 
-                col= c("red", "blue"))
+  tm_add_legend(title= "Legend", type = "symbol", labels= c("NWS stations", "Flash flood events"), 
+                col= c("red", "blue"))+
+  tm_layout(title= "NWS Stations and flash flood events in Onondaga, Madison, 
+            and Oneida County NY", legend.title.size= 1.5, legend.text.size= 1, 
+            legend.position= c("left", "top"), inner.margins= 0.04, 
+            title.fontface = "bold")
 
 row1 <- loc_storm_mad[1,]
 start_points <- list(rbind(c(row1$BEGIN_LON, row1$BEGIN_LAT), 
@@ -165,12 +197,43 @@ start_points <- list(rbind(c(row1$BEGIN_LON, row1$BEGIN_LAT),
 pts <- st_sfc(st_polygon(start_points))
 
 poly <- st_sf(row1,geometry= pts)
-poly1 <- st_cast(st_bbox(pts), to= "POLYGON")
+#poly1 <- st_cast(st_bbox(pts), to= "POLYGON")
 plot(poly$geometry)
 plot(p_storm_mad$geometry, add=TRUE)
-plot(bbox, col= "red")
+#plot(bbox, col= "red")
 
 tm_shape(flash)+
   tm_borders()
 poly <- row1 %>%
   st_as_sf(coords = c())
+
+year_ev <- list()
+stat_ev_sav <- list()
+flash_comb <- rbind(p_storm_onon, p_storm_mad, p_storm_onei)
+
+for(i in 1:length(year)){
+  year_sub[[i]] <- stations[year[i] >= stations$first_year & 
+                              year[i] <= stations$last_year,]
+  year_ev[[i]] <- flash_comb[year[i] >= stations$first_year & #probably should combine storm event datasets
+                             year[i] <= stations$last_year,]
+  mapsave <- tm_shape(cny, unit= "mi")+
+    tm_borders(lwd=2, lty=1, col= "black")+
+    tm_shape(year_sub[[i]])+
+    tm_dots(size= 0.3, title= "NWS Weather Stations", col= "red")+
+    tm_layout(title= year[i])+
+    tm_shape(cny_cities)+
+    tm_borders(lwd=1, #line thickness
+               lty=1, col= "grey")+ #line type
+    tm_scale_bar(position=c("center", "top"), text.size= 1)+
+    tm_compass(position = c("RIGHT", "bottom"), size = 3)+
+    tm_add_legend(title= "Legend", type = "symbol", labels= c("NWS weather stations"), 
+                  col= c("red"))
+  
+  
+  
+  tmap_save(mapsave, paste0("C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year",year[i],".png"), 
+            width= 5, height= 5, units= "in", dpi= 200)
+  
+}
+
+#voronoi polygons

@@ -47,7 +47,7 @@ hillside <- meteo_distance(
   43.3570138,-75.3873953,units = "deg",
   radius = 30,
   limit = NULL)
- #data frame with the last year of recorded data for cny stations
+#data frame with the last year of recorded data for cny stations
 cny_stations_years <- all_stations[all_stations$id %in% id_station,]
 #adds column for active vs nonactive weather stations
 cny_stations_years <- cny_stations_years %>%
@@ -55,13 +55,15 @@ cny_stations_years <- cny_stations_years %>%
 #tmap for tricounty area with city boundaries and stations
 counties_cities <- tm_shape(cny_cities)+
   tm_borders(lwd=1, #line thickness
-             lty=1, col= "darkred")+ #line type
+             lty=1, col= "grey")+ #line type
 tm_shape(cny)+
-  tm_borders(lwd=2, lty=1, col= "red")+
+  tm_borders(lwd=2, lty=1, col= "black")+
 tm_shape(stations)+
-  tm_dots(size= 0.3, title= "NWS Weather Stations")+
-  tm_scale_bar(position=c("left", "bottom"))+
-  tm_compass(position = c("left", "top"), size = 1)
+  tm_dots(size= 0.3, title= "NWS Weather Stations", col= "red")+
+  tm_scale_bar(position=c("center", "top"), text.size= 1)+
+  tm_compass(position = c("RIGHT", "bottom"), size = 3)+
+  tm_layout(title= "NWS Stations in Onondaga, Madison, and Oneida County NY", 
+            inner.margins= 0.04, title.fontface = "bold")
   
 tmap_save(counties_cities, "C:\\Users\\foliv\\Documents\\thesis data\\cities_counties.png", 
           width= 5, height= 5, units= "in", dpi= 200)
@@ -72,9 +74,11 @@ year <- seq(1893, 2022)
 year_sub <- list()
 
 mapsave <- list()
-
+#subsets stations collecting prcp data
 prcp_stations <- stations[stations$element == "PRCP",]
+#makes new column with total number of years that station has been active
 prcp_stations$total_years <- prcp_stations$last_year - prcp_stations$first_year
+#designates whether station is currently operating
 prcp_stations$current_year <- ifelse(prcp_stations$last_year == 2022, 1,0)
 
 year_sub_current <- list()
@@ -116,8 +120,10 @@ for(i in 1:length(year)){
                lty=1, col= "grey")+ #line type
     tm_scale_bar(position=c("center", "top"), text.size= 1)+
     tm_compass(position = c("RIGHT", "bottom"), size = 3)+
-    tm_add_legend(title= "Legend", type = "symbol", labels= c("NWS weather stations"), 
-                  col= c("red"))
+    tm_add_legend(title= "Legend", type = "symbol", 
+                  labels= c("NWS stations", "NWS station active in 2022 and has been
+                            active for at least 50 years"), 
+                  col= c("red", "black"))
   
   
   
@@ -163,13 +169,11 @@ p_storm_onon <- st_as_sf(loc_storm_onon, coords = c("BEGIN_LON","BEGIN_LAT"),
 loc_storm_onei <- subset(storm_onei, !is.na(BEGIN_LON))
 p_storm_onei <- st_as_sf(loc_storm_onei, coords = c("BEGIN_LON","BEGIN_LAT"), 
                         crs=4326)
-
+city_label <- cny_cities[cny_cities$POP2020 >30000,]
 #map with stations and flash flood
 tm_shape(cny_cities, unit= "mi")+
   tm_borders(lwd=1, #line thickness
              lty=1, col= "grey")+ #line type
-  tm_shape(cny)+
-  tm_borders(lwd=2, lty=1, col= "black")+
   tm_shape(stations)+
   tm_dots(size= 0.3, title= "NWS Stations", col="red")+
   tm_shape(p_storm_mad)+
@@ -184,8 +188,14 @@ tm_shape(cny_cities, unit= "mi")+
                 col= c("red", "blue"))+
   tm_layout(title= "NWS Stations and flash flood events in Onondaga, Madison, 
             and Oneida County NY", legend.title.size= 1.5, legend.text.size= 1, 
-            legend.position= c("left", "top"), inner.margins= 0.04, 
-            title.fontface = "bold")
+            legend.position= c("left", "top"), inner.margins= 0.08, 
+            title.fontface = "bold")+
+  tm_shape(city_label)+
+  tm_borders(lwd=1, #line thickness
+             lty=1, col= "grey")+
+  tm_text("NAME")+
+  tm_shape(cny)+
+  tm_borders(lwd=2, lty=1, col= "black")
 
 row1 <- loc_storm_mad[1,]
 start_points <- list(rbind(c(row1$BEGIN_LON, row1$BEGIN_LAT), 
@@ -236,4 +246,5 @@ for(i in 1:length(year)){
   
 }
 
+voronoi <- voronoi_polygon(stations,x="x",y="y")
 #voronoi polygons

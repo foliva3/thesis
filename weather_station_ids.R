@@ -85,6 +85,7 @@ prcp_stations$current_year <- ifelse(prcp_stations$last_year == 2022, 1,0)
 year_sub_current <- list()
 colorv <- character()
 
+#for loop that shows weather stations active in 2022 and for at least 50 years
 for(i in 1:length(year)){
   year_sub[[i]] <- prcp_stations[year[i] >= prcp_stations$first_year & 
                               year[i] <= prcp_stations$last_year,]
@@ -198,30 +199,33 @@ tm_shape(cny_cities, unit= "mi")+
   tm_shape(cny)+
   tm_borders(lwd=2, lty=1, col= "black")
 
-row1 <- loc_storm_mad[1,]
-start_points <- list(rbind(c(row1$BEGIN_LON, row1$BEGIN_LAT), 
-                     c(row1$BEGIN_LON, row1$END_LAT), 
-                     c(row1$END_LON, row1$END_LAT), 
-                     c(row1$END_LON, row1$BEGIN_LAT),
-                     c(row1$BEGIN_LON, row1$BEGIN_LAT)))
+#initial attempt at splitting the tricounty areas into polygons for each 
+#weather station
+#row1 <- loc_storm_mad[1,]
+#start_points <- list(rbind(c(row1$BEGIN_LON, row1$BEGIN_LAT), 
+                     #c(row1$BEGIN_LON, row1$END_LAT), 
+                     #c(row1$END_LON, row1$END_LAT), 
+                     #c(row1$END_LON, row1$BEGIN_LAT),
+                     #c(row1$BEGIN_LON, row1$BEGIN_LAT)))
                            
-pts <- st_sfc(st_polygon(start_points))
+#pts <- st_sfc(st_polygon(start_points))
 
-poly <- st_sf(row1,geometry= pts)
+#poly <- st_sf(row1,geometry= pts)
 #poly1 <- st_cast(st_bbox(pts), to= "POLYGON")
-plot(poly$geometry)
-plot(p_storm_mad$geometry, add=TRUE)
+#plot(poly$geometry)
+#plot(p_storm_mad$geometry, add=TRUE)
 #plot(bbox, col= "red")
 
-tm_shape(flash)+
+#tm_shape(flash)+
   tm_borders()
-poly <- row1 %>%
-  st_as_sf(coords = c())
+#poly <- row1 %>%
+  #st_as_sf(coords = c())
 
 year_ev <- list()
 stat_ev_sav <- list()
 flash_comb <- rbind(p_storm_onon, p_storm_mad, p_storm_onei)
 
+#for loop that shows active weather stations for each year
 for(i in 1:length(year)){
   year_sub[[i]] <- stations[year[i] >= stations$first_year & 
                               year[i] <= stations$last_year,]
@@ -242,7 +246,7 @@ for(i in 1:length(year)){
   
   
   
-  tmap_save(mapsave, paste0("C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year",year[i],".png"), 
+  tmap_save(mapsave, paste0("C:\\Users\\foliv\\Documents\\thesis data\\wstations_active\\year",year[i],".png"), 
             width= 5, height= 5, units= "in", dpi= 200)
   
 }
@@ -259,6 +263,7 @@ plot(vstations)
 points(stationsV)
 spat_vstat <- sf::st_as_sf(vstations)
 crop_vstat <- st_crop(spat_vstat, cny)
+inter_vstat <- st_intersection(spat_vstat, cny)
 tmap_voronoi <- tm_shape(inter_vstat)+
   tm_borders()+
   tm_fill(col="total_years", style= "jenks", n=6)+
@@ -274,6 +279,6 @@ tmap_voronoi <- tm_shape(inter_vstat)+
 
 proj_flash <- st_transform(flash_comb, 26918)
 comb_event_v <- st_join(proj_flash, spat_vstat)
-inter_vstat <- st_intersection(spat_vstat, cny)
+
 st_write(comb_event_v2, "C:\\Users\\foliv\\Documents\\thesis data\\comb_event_v2.shp")
 comb_event_v2 <- cbind(comb_event_v[,1:61],comb_event_v[,64:66])

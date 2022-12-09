@@ -15,6 +15,7 @@ cny <- counties[counties$NAME =="Oneida"|
                   counties$NAME =="Madison"|
                   counties$NAME == "Onondaga",]
 all_stations <- ghcnd_stations()
+
 counties.points <- st_as_sf(all_stations, coords = c("longitude","latitude"), 
                             crs=4326)
 counties.p <- st_transform(counties.points,st_crs(cny))
@@ -64,7 +65,7 @@ tm_shape(stations)+
   tm_compass(position = c("RIGHT", "bottom"), size = 3)+
   tm_layout(title= "NWS Stations in Onondaga, Madison, and Oneida County NY", 
             inner.margins= 0.04, title.fontface = "bold")
-  
+
 tmap_save(counties_cities, "C:\\Users\\foliv\\Documents\\thesis data\\cities_counties.png", 
           width= 5, height= 5, units= "in", dpi= 200)
 min(stations$first_year)
@@ -246,5 +247,33 @@ for(i in 1:length(year)){
   
 }
 
-voronoi <- voronoi_polygon(stations,x="x",y="y")
+voronoi <- voronoi_polygon(prcp_stations,x="x",y="y")
 #voronoi polygons
+# proximity (Voronoi/Thiessen) polygons
+stationsV <- vect(prcp_stations)
+v <- voronoi(stationsV)
+plot(v)
+points(stationsV)
+vstations <- crop(v, vect(st_union(cities)))
+plot(vstations)
+points(stationsV)
+spat_vstat <- sf::st_as_sf(vstations)
+crop_vstat <- st_crop(spat_vstat, cny)
+tmap_voronoi <- tm_shape(inter_vstat)+
+  tm_borders()+
+  tm_fill(col="total_years", style= "jenks", n=6)+
+  tm_shape(cny)+
+  tm_borders(lwd=2, lty=1, col= "black")+
+  tm_scale_bar(position=c("LEFT", "BOTTOM"), text.size= 1)+
+  tm_compass(position = c("RIGHT", "bottom"), size = 3)+
+  tm_layout(title= "NWS Stations in Onondaga, Madison, and Oneida County NY", 
+            inner.margins= 0.08, title.fontface = "bold", 
+            title.position = c("LEFT", "TOP"))+ 
+  tm_shape(stations)+
+  tm_dots(size= 0.3, title= "NWS Weather Stations", col= "red")
+
+proj_flash <- st_transform(flash_comb, 26918)
+comb_event_v <- st_join(proj_flash, spat_vstat)
+inter_vstat <- st_intersection(spat_vstat, cny)
+st_write(comb_event_v2, "C:\\Users\\foliv\\Documents\\thesis data\\comb_event_v2.shp")
+comb_event_v2 <- cbind(comb_event_v[,1:61],comb_event_v[,64:66])

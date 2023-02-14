@@ -43,11 +43,11 @@ daily_ghcnd <- meteo_pull_monitors(
   var = "all")
 #removes any rows where prcp is NA
 w_prcp_daily <- subset(daily_ghcnd, !is.na(prcp))
-hillside <- meteo_distance(
-  all_stations,
-  43.3570138,-75.3873953,units = "deg",
-  radius = 30,
-  limit = NULL)
+#hillside <- meteo_distance(
+  #all_stations,
+  #43.3570138,-75.3873953,units = "deg",
+  #radius = 30,
+  #limit = NULL)
 #data frame with the last year of recorded data for cny stations
 cny_stations_years <- all_stations[all_stations$id %in% id_station,]
 #adds column for active vs nonactive weather stations
@@ -112,35 +112,162 @@ for(i in 1:length(year)){
   }
   mapsave <- tm_shape(cny, unit= "mi")+
     tm_borders(lwd=2, lty=1, col= "black")+
+    tm_shape(cny_cities)+
+    tm_borders(lwd=1, #line thickness
+               lty=1, col= "grey")+ #line type
     tm_shape(year_sub[[i]])+
     tm_dots(size= 0.3, title= "NWS Weather Stations", col= "red")+
     tm_shape(year_sub_current[[i]])+
     tm_dots(size= 0.3, col= colorv[i])+
-    tm_layout(title= year[i])+
-    tm_shape(cny_cities)+
-    tm_borders(lwd=1, #line thickness
-               lty=1, col= "grey")+ #line type
-    tm_scale_bar(position=c("center", "top"), text.size= 1)+
+    tm_layout(title= year[i], legend.title.size= 1, legend.text.size= 0.75, 
+              inner.margins= 0.1, title.fontface = "bold", legend.width= 0.8, 
+              legend.position = c("LEFT", "top"))+
+    tm_scale_bar(position=c("center", "top"), text.size= 0.75)+
     tm_compass(position = c("RIGHT", "bottom"), size = 3)+
     tm_add_legend(title= "Legend", type = "symbol", 
-                  labels= c("NWS stations", "NWS station active in 2022 and has been
-                            active for at least 50 years"), 
+                  labels= c("Active NWS stations", "NWS station active in 2022 and active for at least 50 years"), 
                   col= c("red", "black"))
   
   
   
-  tmap_save(mapsave, paste0("C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year",year[i],".png"), 
-            width= 5, height= 5, units= "in", dpi= 200)
+  tmap_save(mapsave, paste0("C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year",year[i],".png"), 
+            width= 6, height= 6, units= "in", dpi= 150)
   
 }
 
 
 #install.packages("magick")
 library(magick)
-# list file names and read in
-imgs <- list.files(path = "C:\\Users\\foliv\\Documents\\thesis data\\
-                   time_sequence", full.names = TRUE)
-img_list <- lapply(imgs, image_read)
+img_list <- lapply(c("C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1893.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1894.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1895.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1896.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1897.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1898.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1899.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1900.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1901.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1902.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1903.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1904.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1905.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1906.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1907.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1908.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1909.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1910.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1911.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1912.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1913.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1914.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1915.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1916.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1917.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1918.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1919.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1920.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1921.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1922.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1923.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1924.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1925.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1926.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1927.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1928.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1929.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1930.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1931.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1932.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1933.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1934.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1935.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1936.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1937.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1938.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1939.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1940.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1941.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1942.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1943.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1944.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1945.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1946.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1947.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1948.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1949.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1950.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1951.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1952.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1953.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1954.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1955.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1956.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1957.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1958.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1959.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1960.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1961.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1962.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1963.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1964.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1965.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1966.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1967.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1968.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1969.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1970.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1971.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1972.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1973.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1974.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1975.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1976.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1977.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1978.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1979.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1980.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1981.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1982.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1983.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1984.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1985.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1986.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1987.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1988.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1989.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1990.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1991.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1992.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1993.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1994.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1995.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1996.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1997.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1998.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1999.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2000.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2001.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2002.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2003.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2004.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2005.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2006.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2007.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2008.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2009.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2010.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2011.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2012.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2013.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2014.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2015.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2016.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2017.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2018.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2019.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2020.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2021.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2022.png"), image_read)
 
 # join the images together
 img_joined <- image_join(img_list)
@@ -150,7 +277,7 @@ img_animated <- image_animate(img_joined, fps = 4)
 
 # save
 image_write(image = img_animated,
-            path = "C:\\Users\\foliv\\Documents\\thesis data\\gif_time_seq_2.gif")
+            path = "C:\\Users\\foliv\\Documents\\thesis data\\gif_time_seq_3.gif")
 
 
 
@@ -172,32 +299,33 @@ loc_storm_onei <- subset(storm_onei, !is.na(BEGIN_LON))
 p_storm_onei <- st_as_sf(loc_storm_onei, coords = c("BEGIN_LON","BEGIN_LAT"), 
                         crs=4326)
 city_label <- cny_cities[cny_cities$POP2020 >30000,]
-#map with stations and flash flood
-tm_shape(cny_cities, unit= "mi")+
-  tm_borders(lwd=1, #line thickness
-             lty=1, col= "grey")+ #line type
-  tm_shape(stations)+
-  tm_dots(size= 0.3, title= "NWS Stations", col="red")+
+#map with stations, flash flood, and city labels
+
+tm_shape(stations, unit= "mi")+
+  tm_dots(size= 0.2, title= "NWS Stations", col="red")+
   tm_shape(p_storm_mad)+
-  tm_dots(size= 0.3, title= "Madison Flash Floods", col= "blue")+
+  tm_dots(size= 0.2, title= "Madison Flash Floods", col= "blue")+
   tm_shape(p_storm_onei)+
-  tm_dots(size= 0.3, title= "Oneida Flash Floods", col= "blue")+
+  tm_dots(size= 0.2, title= "Oneida Flash Floods", col= "blue")+
   tm_shape(p_storm_onon)+
-  tm_dots(size= 0.3, title= "Onondaga Flash Floods", col= "blue")+
+  tm_dots(size= 0.2, title= "Onondaga Flash Floods", col= "blue")+
+  tm_shape(cny)+
+  tm_borders(lwd=2, lty=1, col= "black")+
+  tm_shape(cny_cities)+
+  tm_borders(lwd=0.5, #line thickness
+             lty=1, col= "grey")+ #line type
   tm_scale_bar(position=c("left", "BOTTOM"), text.size= 1)+
   tm_compass(position = c("RIGHT", "bottom"), size = 3)+
   tm_add_legend(title= "Legend", type = "symbol", labels= c("NWS stations", "Flash flood events"), 
-                col= c("red", "blue"))+
-  tm_layout(title= "NWS Stations and flash flood events in Onondaga, Madison, 
-            and Oneida County NY", legend.title.size= 1.5, legend.text.size= 1, 
-            legend.position= c("left", "top"), inner.margins= 0.08, 
-            title.fontface = "bold")+
+                col= c("red", "blue"), size=0.5)+
+  tm_layout(title= "NWS Stations and flash flood events in Onondaga, Madison, and Oneida County NY", 
+            legend.title.size= 2, legend.text.size= 1.5, 
+            legend.position= c("left", "top"), inner.margins= 0.17, 
+            title.fontface = "bold", title.position = c("LEFT", "TOP"), title.size = 1.16)+
   tm_shape(city_label)+
-  tm_borders(lwd=1, #line thickness
+  tm_borders(lwd=0, #line thickness
              lty=1, col= "grey")+
-  tm_text("NAME")+
-  tm_shape(cny)+
-  tm_borders(lwd=2, lty=1, col= "black")
+  tm_text("NAME", shadow=TRUE, fontface = "bold", auto.placement = TRUE)
 
 #initial attempt at splitting the tricounty areas into polygons for each 
 #weather station
@@ -217,7 +345,7 @@ tm_shape(cny_cities, unit= "mi")+
 #plot(bbox, col= "red")
 
 #tm_shape(flash)+
-  tm_borders()
+  #tm_borders()
 #poly <- row1 %>%
   #st_as_sf(coords = c())
 
@@ -233,12 +361,12 @@ for(i in 1:length(year)){
                              year[i] <= stations$last_year,]
   mapsave <- tm_shape(cny, unit= "mi")+
     tm_borders(lwd=2, lty=1, col= "black")+
-    tm_shape(year_sub[[i]])+
-    tm_dots(size= 0.3, title= "NWS Weather Stations", col= "red")+
     tm_layout(title= year[i])+
     tm_shape(cny_cities)+
     tm_borders(lwd=1, #line thickness
                lty=1, col= "grey")+ #line type
+    tm_shape(year_sub[[i]])+
+    tm_dots(size= 0.3, title= "NWS Weather Stations", col= "red")+
     tm_scale_bar(position=c("center", "top"), text.size= 1)+
     tm_compass(position = c("RIGHT", "bottom"), size = 3)+
     tm_add_legend(title= "Legend", type = "symbol", labels= c("NWS weather stations"), 
@@ -264,21 +392,74 @@ points(stationsV)
 spat_vstat <- sf::st_as_sf(vstations)
 crop_vstat <- st_crop(spat_vstat, cny)
 inter_vstat <- st_intersection(spat_vstat, cny)
-tmap_voronoi <- tm_shape(inter_vstat)+
+tmap_voronoi <- tm_shape(inter_vstat, unit= "mi")+
   tm_borders()+
-  tm_fill(col="total_years", style= "jenks", n=6)+
+  tm_fill(col="total_years", style= "jenks", n=6, title= "Total years active")+
   tm_shape(cny)+
   tm_borders(lwd=2, lty=1, col= "black")+
-  tm_scale_bar(position=c("LEFT", "BOTTOM"), text.size= 1)+
-  tm_compass(position = c("RIGHT", "bottom"), size = 3)+
-  tm_layout(title= "NWS Stations in Onondaga, Madison, and Oneida County NY", 
-            inner.margins= 0.08, title.fontface = "bold", 
-            title.position = c("LEFT", "TOP"))+ 
+  tm_scale_bar(position=c("left", "BOTTOM"), text.size= 1)+
+  tm_compass(position = c("RIGHT", "bottom"), size = 4)+
+  tm_layout(title= "Weather station coverage using Voronoi diagram", 
+            inner.margins= 0.05, title.fontface = "bold", title.position = c("LEFT", "TOP"), 
+            legend.text.size = 1, legend.title.size = 1.5, title.size = 2.5)+ 
   tm_shape(stations)+
   tm_dots(size= 0.3, title= "NWS Weather Stations", col= "red")
 
 proj_flash <- st_transform(flash_comb, 26918)
 comb_event_v <- st_join(proj_flash, spat_vstat)
-
-st_write(comb_event_v2, "C:\\Users\\foliv\\Documents\\thesis data\\comb_event_v2.shp")
 comb_event_v2 <- cbind(comb_event_v[,1:61],comb_event_v[,64:66])
+#st_write(comb_event_v2, "C:\\Users\\foliv\\Documents\\thesis data\\comb_event_v2.shp")
+
+
+distance_wstations <- comb_event_v2$id
+loc_comb_stat <- prcp_stations[prcp_stations$id %in% distance_wstations,]
+loc_comb_stat <- cbind(loc_comb_stat[,1:24],loc_comb_stat[,27])
+#st_write(loc_comb_stat, "C:\\Users\\foliv\\Documents\\thesis data\\wstations3.shp")
+
+#################mapping climate variability###################
+#making separate columns for year, month, day
+w_prcp_daily_v2 <- w_prcp_daily %>%
+  dplyr::mutate(year = lubridate::year(date), 
+                month = lubridate::month(date), 
+                day = lubridate::day(date))
+avg_precip <- w_prcp_daily_v2 %>% #Acquiring the mean rain per station
+  group_by(id,month,year) %>% #This command groups the mean data by month
+  summarise(avg_prcp = sum(prcp),
+            n_count= length(prcp)) #This summarises the station,month combination 
+#units for prcp are tenths of mm
+avg_precip$cm_avg_prcp <- as.numeric(avg_precip$avg_prcp)/100
+sum_prcp <- avg_precip %>%
+  filter(n_count >= 28)
+sum_prcp_v2 <- inner_join(sum_prcp, stationsny, by= c("id"= "station_id"))
+sum_prcp_v3 <- st_as_sf(sum_prcp_v2, coords= c("long", "lat"), crs=4326)
+sum_prcp_v4 <- st_transform(sum_prcp_v3, 26918)
+#for loop that shows avg rain recorded at each station by month
+month <- seq(1, 12)
+years <- seq(2000, 2021)
+for_month <- list()
+avg_prcp_ser <- list()
+for_year <- list()
+for(i in 1:length(month)){
+  for_month[[i]] <- sum_prcp_v4[sum_prcp_v4$month == month[i],]
+  for(k in 1:length(years)){
+  for_year[[k]] <- for_month[[i]][for_month[[i]]$year == years[k],]
+  avg_prcp_ser <- tm_shape(cny, unit= "mi")+
+    tm_borders(lwd=2, lty=1, col= "black")+
+    tm_layout(title= month[i])+
+    tm_shape(cny_cities)+
+    tm_borders(lwd=1, #line thickness
+               lty=1, col= "grey")+ #line type
+    tm_shape(for_year[[k]])+
+    tm_symbols(size= 0.3, col= "cm_avg_prcp",
+               palette = "Blues")+
+    tm_scale_bar(position=c("center", "top"), text.size= 1)+
+    tm_compass(position = c("RIGHT", "bottom"), size = 3)+
+    tm_add_legend(title= "Legend", type = "symbol", labels= c("NWS weather stations"), 
+                  col= c("red"))
+  
+  
+  
+  tmap_save(avg_prcp_ser, paste0("C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_",month[i],"year_",years[k],".png"), 
+            width= 5, height= 5, units= "in", dpi= 200)
+  
+}}

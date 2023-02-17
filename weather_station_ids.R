@@ -452,10 +452,10 @@ for(i in 1:length(month)){
     tm_shape(for_year[[k]])+
     tm_symbols(size= 0.3, col= "cm_avg_prcp",
                palette = "Blues")+
+    tm_text("cm_avg_prcp", just= "bottom")+
     tm_scale_bar(position=c("center", "top"), text.size= 1)+
-    tm_compass(position = c("RIGHT", "bottom"), size = 3)+
-    tm_add_legend(title= "Legend", type = "symbol", labels= c("NWS weather stations"), 
-                  col= c("red"))
+    tm_compass(position = c("RIGHT", "bottom"), size = 3)
+    
   
   
   
@@ -463,3 +463,15 @@ for(i in 1:length(month)){
             width= 5, height= 5, units= "in", dpi= 200)
   
 }}
+
+avg_month <- sum_prcp_v4 %>%
+  group_by(month, year) %>%
+  summarise(av_month= mean(cm_avg_prcp), 
+            sd_month= sd(cm_avg_prcp), 
+            n_month= n())
+avg_month2 <- avg_month %>% 
+  filter(year>=2000)
+avg_month2 <- avg_month2[,1:5]
+sum_prcp_v5 <- inner_join(data.frame(sum_prcp_v4), avg_month, 
+                          by= c("month", "year"))
+sum_prcp_v5$anomaly <- sum_prcp_v5$cm_avg_prcp-sum_prcp_v5$av_month

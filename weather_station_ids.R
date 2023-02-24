@@ -475,3 +475,24 @@ avg_month2 <- avg_month2[,1:5]
 sum_prcp_v5 <- inner_join(data.frame(sum_prcp_v4), avg_month, 
                           by= c("month", "year"))
 sum_prcp_v5$anomaly <- sum_prcp_v5$cm_avg_prcp-sum_prcp_v5$av_month
+
+sum_prcp_v5$c.variation <- ((sum_prcp_v5$sd_month/sum_prcp_v5$av_month)*100)
+
+ggplot(data = sum_prcp_v5, aes(x = month, y = anomaly, fill=year)) + 
+  stat_boxplot(geom = "errorbar") +
+  geom_boxplot(outlier.colour = NA) +
+  xlab("Month") + 
+  ylab("Total Rainfall (cm)") + 
+  labs(title = "NWS weather Stations") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 15, by = 5), limits = c(0, 15))
+
+sum_prcp_v5 %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = month, y = anomaly)) + 
+  geom_boxplot()+
+  xlab("Month") + 
+  ylab("Total Rainfall (cm)") + 
+  labs(title = "NWS weather Stations") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 15, by = 5), limits = c(0, 15))

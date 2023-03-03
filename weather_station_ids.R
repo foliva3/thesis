@@ -1,4 +1,6 @@
 #install.packages('terra')
+#install.packages('spatialEco')
+library(spatialEco)
 library(terra)
 library(rnoaa)
 library(dplyr)
@@ -23,6 +25,7 @@ counties.p <- st_transform(counties.points,st_crs(cny))
 plot(cny$geometry)
 plot(counties.p$geometry, add=TRUE, pch=19)
 #reads city boundary shape file and sorts out cities within tricounty area
+#NAD83 UTM18N
 cities <- st_read("C:\\Users\\foliv\\Documents\\thesis data\\NYS_Civil_Boundaries.shp\\Cities_Towns.shp")
 cny_cities <- cities[cities$COUNTY =="Oneida"|
                        cities$COUNTY =="Madison"|
@@ -378,7 +381,10 @@ for(i in 1:length(year)){
             width= 5, height= 5, units= "in", dpi= 200)
   
 }
-
+install.packages("ggmap")
+library(ggmap)
+install.packages("ggvoronoi")
+library(ggvoronoi)
 voronoi <- voronoi_polygon(prcp_stations,x="x",y="y")
 #voronoi polygons
 # proximity (Voronoi/Thiessen) polygons
@@ -464,6 +470,30 @@ for(i in 1:length(month)){
   
 }}
 
+
+for_month2 <- list()
+anomaly_dist <- list()
+for(i in 1:length(month)){
+  for_month2[[i]] <- sum_prcp_v5[sum_prcp_v5$month == month[i],]
+  anomaly_dist <- ggplot(data= for_month2[[i]], aes(group= year, x = year, y = anomaly)) +
+    geom_boxplot() +
+    xlab("Year") + 
+    ylab("Difference from mean monthly total rainfall (cm)") + 
+    labs(title = "NWS weather Stations") + 
+    theme(plot.title = element_text(hjust = 0.5)) + 
+    scale_y_continuous(breaks = seq(-10, 10, by = 2), limits = c(-10, 10))
+    
+    
+    
+    
+}
+
+for (i in 1:length(month)) {
+  file_name = paste("iris_plot_", i, ".tiff", sep="")
+  tiff(file_name)
+  print(plot_list[[i]])
+  dev.off()
+}
 avg_month <- sum_prcp_v4 %>%
   group_by(month, year) %>%
   summarise(av_month= mean(cm_avg_prcp), 
@@ -478,14 +508,15 @@ sum_prcp_v5$anomaly <- sum_prcp_v5$cm_avg_prcp-sum_prcp_v5$av_month
 
 sum_prcp_v5$c.variation <- ((sum_prcp_v5$sd_month/sum_prcp_v5$av_month)*100)
 
-ggplot(data = sum_prcp_v5, aes(group= year, x = year, y = anomaly)) + 
-  stat_boxplot(geom = "errorbar") +
-  geom_boxplot(outlier.colour = NA) +
-  xlab("Month") + 
+sum_prcp_v5 %>% 
+  group_by(month) %>%
+ggplot(aes(group= year, x = year, y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
   ylab("Difference from mean monthly total rainfall (cm)") + 
   labs(title = "NWS weather Stations") + 
   theme(plot.title = element_text(hjust = 0.5)) + 
-  scale_y_continuous(breaks = seq(0, 15, by = 5), limits = c(0, 15))
+  scale_y_continuous(breaks = seq(-10, 10, by = 2), limits = c(-10, 10))
 
 sum_prcp_v5 %>% 
   group_by(year, id) %>% 

@@ -471,29 +471,6 @@ for(i in 1:length(month)){
 }}
 
 
-for_month2 <- list()
-anomaly_dist <- list()
-for(i in 1:length(month)){
-  for_month2[[i]] <- sum_prcp_v5[sum_prcp_v5$month == month[i],]
-  anomaly_dist <- ggplot(data= for_month2[[i]], aes(group= year, x = year, y = anomaly)) +
-    geom_boxplot() +
-    xlab("Year") + 
-    ylab("Difference from mean monthly total rainfall (cm)") + 
-    labs(title = "NWS weather Stations") + 
-    theme(plot.title = element_text(hjust = 0.5)) + 
-    scale_y_continuous(breaks = seq(-10, 10, by = 2), limits = c(-10, 10))
-    
-    
-    
-    
-}
-
-for (i in 1:length(month)) {
-  file_name = paste("iris_plot_", i, ".tiff", sep="")
-  tiff(file_name)
-  print(plot_list[[i]])
-  dev.off()
-}
 avg_month <- sum_prcp_v4 %>%
   group_by(month, year) %>%
   summarise(av_month= mean(cm_avg_prcp), 
@@ -504,26 +481,174 @@ avg_month2 <- avg_month %>%
 avg_month2 <- avg_month2[,1:5]
 sum_prcp_v5 <- inner_join(data.frame(sum_prcp_v4), avg_month, 
                           by= c("month", "year"))
+#makes anomaly column
 sum_prcp_v5$anomaly <- sum_prcp_v5$cm_avg_prcp-sum_prcp_v5$av_month
-
+#coefficient of variation
 sum_prcp_v5$c.variation <- ((sum_prcp_v5$sd_month/sum_prcp_v5$av_month)*100)
-
+#plots for each month
 sum_prcp_v5 %>% 
-filter(month==10)%>%
+filter(month==1)%>%
   ggplot(aes(x = as.factor(year), y = anomaly)) +
   geom_boxplot() +
   xlab("Year") + 
   ylab("Difference from mean monthly total precipitation (cm)") + 
-  labs(title = "NWS weather Stations") + 
+  labs(title = "January") + 
   theme(plot.title = element_text(hjust = 0.5)) + 
-  scale_y_continuous(breaks = seq(-10, 10, by = 2), limits = c(-10, 10))
-
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
 sum_prcp_v5 %>% 
-  group_by(year, id) %>% 
-  ggplot(aes(x = year, y = anomaly)) + 
-  geom_boxplot()+
-  xlab("Stations") + 
-  ylab("Difference from the mean (cm)") + 
-  labs(title = "NWS weather Stations") + 
+  filter(month==2)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "February") + 
   theme(plot.title = element_text(hjust = 0.5)) + 
-  scale_y_continuous(breaks = seq(0, 15, by = 5), limits = c(0, 15))
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==3)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "March") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==4)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "April") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==5)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "May") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==6)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "June") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==7)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "July") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==8)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "August") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==9)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "September") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==10)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "October") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==11)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "November") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==12)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
+  labs(title = "December") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(-16, 14, by = 4), 
+                     limits = c(-16, 14))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+
+library(magick)
+anomaly_ser <- lapply(c("C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\1.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\2.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\3.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\4.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\5.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\6.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\7.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\8.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\9.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\10.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\11.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\12.png"), image_read)
+join_anomaly <- image_join(anomaly_ser)
+# animate at 1 frame per second
+anomaly_gif <- image_animate(join_anomaly, fps = 1)
+
+# save
+image_write(image = anomaly_gif,
+            path = "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_anim.gif")
+

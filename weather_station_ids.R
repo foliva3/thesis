@@ -509,11 +509,11 @@ sum_prcp_v5$anomaly <- sum_prcp_v5$cm_avg_prcp-sum_prcp_v5$av_month
 sum_prcp_v5$c.variation <- ((sum_prcp_v5$sd_month/sum_prcp_v5$av_month)*100)
 
 sum_prcp_v5 %>% 
-  group_by(month) %>%
-ggplot(aes(group= year, x = year, y = anomaly)) +
+filter(month==10)%>%
+  ggplot(aes(x = as.factor(year), y = anomaly)) +
   geom_boxplot() +
   xlab("Year") + 
-  ylab("Difference from mean monthly total rainfall (cm)") + 
+  ylab("Difference from mean monthly total precipitation (cm)") + 
   labs(title = "NWS weather Stations") + 
   theme(plot.title = element_text(hjust = 0.5)) + 
   scale_y_continuous(breaks = seq(-10, 10, by = 2), limits = c(-10, 10))

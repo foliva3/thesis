@@ -652,3 +652,11 @@ anomaly_gif <- image_animate(join_anomaly, fps = 1)
 image_write(image = anomaly_gif,
             path = "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_anim.gif")
 
+########################correlogram######################
+sum_prcp_v6 <- st_sf(sum_prcp_v5)
+#sum_prcp_v6 %>% 
+  #filter(month==3 &
+          # year==2021)%>%
+correlogram(sum_prcp_v6, v= sum_prcp_v6$anomaly, dist=5,
+              ns= 99)
+

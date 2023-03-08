@@ -654,9 +654,9 @@ image_write(image = anomaly_gif,
 
 ########################correlogram######################
 sum_prcp_v6 <- st_sf(sum_prcp_v5)
-#sum_prcp_v6 %>% 
-  #filter(month==3 &
-          # year==2021)%>%
-correlogram(sum_prcp_v6, v= sum_prcp_v6$anomaly, dist=5,
-              ns= 99)
+anom_mar_21 <- sum_prcp_v6 %>% 
+  filter(month==3 & year==2021)
+anom_mar_21 <- st_as_sf(anom_mar_21)
+spatialEco::correlogram(anom_mar_21, v= anom_mar_21$anomaly, 
+                        dist=4000, ns= 99)
 

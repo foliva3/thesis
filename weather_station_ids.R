@@ -88,6 +88,8 @@ prcp_stations$current_year <- ifelse(prcp_stations$last_year == 2022, 1,0)
 year_sub_current <- list()
 colorv <- character()
 
+#there's something currently wrong with this for loop, its marking 
+#all years after 1931 as active for over 50 years and including 2022
 #for loop that shows weather stations active in 2022 and for at least 50 years
 for(i in 1:length(year)){
   year_sub[[i]] <- prcp_stations[year[i] >= prcp_stations$first_year & 
@@ -111,7 +113,7 @@ for(i in 1:length(year)){
                  current_year == 1&
                  total_years >50))!=0){
   colorv[i] <- "black"}else{
-    colorv[i] <- "white"
+    colorv[i] <- "red"
   }
   mapsave <- tm_shape(cny, unit= "mi")+
     tm_borders(lwd=2, lty=1, col= "black")+
@@ -119,7 +121,7 @@ for(i in 1:length(year)){
     tm_borders(lwd=1, #line thickness
                lty=1, col= "grey")+ #line type
     tm_shape(year_sub[[i]])+
-    tm_dots(size= 0.3, title= "NWS Weather Stations", col= "red")+
+    tm_dots(size= 0.3, title= "NWS Weather Stations", col= colorv[i])+
     tm_shape(year_sub_current[[i]])+
     tm_dots(size= 0.3, col= colorv[i])+
     tm_layout(title= year[i], legend.title.size= 1, legend.text.size= 0.75, 
@@ -141,136 +143,136 @@ for(i in 1:length(year)){
 
 #install.packages("magick")
 library(magick)
-img_list <- lapply(c("C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1893.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1894.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1895.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1896.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1897.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1898.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1899.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1900.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1901.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1902.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1903.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1904.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1905.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1906.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1907.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1908.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1909.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1910.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1911.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1912.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1913.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1914.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1915.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1916.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1917.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1918.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1919.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1920.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1921.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1922.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1923.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1924.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1925.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1926.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1927.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1928.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1929.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1930.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1931.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1932.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1933.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1934.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1935.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1936.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1937.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1938.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1939.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1940.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1941.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1942.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1943.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1944.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1945.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1946.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1947.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1948.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1949.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1950.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1951.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1952.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1953.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1954.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1955.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1956.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1957.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1958.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1959.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1960.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1961.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1962.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1963.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1964.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1965.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1966.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1967.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1968.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1969.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1970.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1971.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1972.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1973.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1974.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1975.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1976.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1977.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1978.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1979.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1980.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1981.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1982.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1983.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1984.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1985.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1986.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1987.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1988.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1989.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1990.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1991.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1992.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1993.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1994.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1995.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1996.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1997.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1998.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year1999.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2000.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2001.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2002.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2003.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2004.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2005.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2006.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2007.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2008.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2009.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2010.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2011.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2012.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2013.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2014.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2015.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2016.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2017.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2018.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2019.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2020.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2021.png",
-                     "C:\\Users\\foliv\\Documents\\thesis data\\active_stations\\year2022.png"), image_read)
+img_list <- lapply(c("C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1893.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1894.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1895.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1896.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1897.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1898.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1899.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1900.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1901.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1902.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1903.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1904.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1905.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1906.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1907.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1908.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1909.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1910.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1911.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1912.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1913.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1914.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1915.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1916.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1917.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1918.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1919.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1920.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1921.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1922.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1923.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1924.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1925.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1926.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1927.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1928.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1929.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1930.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1931.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1932.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1933.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1934.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1935.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1936.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1937.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1938.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1939.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1940.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1941.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1942.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1943.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1944.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1945.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1946.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1947.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1948.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1949.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1950.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1951.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1952.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1953.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1954.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1955.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1956.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1957.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1958.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1959.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1960.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1961.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1962.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1963.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1964.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1965.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1966.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1967.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1968.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1969.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1970.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1971.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1972.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1973.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1974.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1975.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1976.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1977.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1978.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1979.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1980.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1981.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1982.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1983.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1984.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1985.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1986.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1987.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1988.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1989.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1990.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1991.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1992.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1993.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1994.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1995.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1996.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1997.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1998.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year1999.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2000.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2001.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2002.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2003.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2004.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2005.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2006.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2007.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2008.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2009.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2010.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2011.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2012.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2013.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2014.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2015.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2016.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2017.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2018.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2019.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2020.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2021.png",
+                     "C:\\Users\\foliv\\Documents\\thesis data\\time_sequence\\year2022.png"), image_read)
 
 # join the images together
 img_joined <- image_join(img_list)
@@ -398,18 +400,25 @@ points(stationsV)
 spat_vstat <- sf::st_as_sf(vstations)
 crop_vstat <- st_crop(spat_vstat, cny)
 inter_vstat <- st_intersection(spat_vstat, cny)
+
+install.packages("viridis")
+library(viridis)
 tmap_voronoi <- tm_shape(inter_vstat, unit= "mi")+
   tm_borders()+
-  tm_fill(col="total_years", style= "jenks", n=6, title= "Total years active")+
+  tm_fill(col="total_years", style= "jenks", n=6, 
+          title= "Total years active", 
+          palette = viridis(n = 3, direction = -1, option= "G"))+
   tm_shape(cny)+
   tm_borders(lwd=2, lty=1, col= "black")+
   tm_scale_bar(position=c("left", "BOTTOM"), text.size= 1)+
   tm_compass(position = c("RIGHT", "bottom"), size = 4)+
   tm_layout(title= "Weather station coverage using Voronoi diagram", 
-            inner.margins= 0.05, title.fontface = "bold", title.position = c("LEFT", "TOP"), 
-            legend.text.size = 1, legend.title.size = 1.5, title.size = 2.5)+ 
+            inner.margins= 0.17, title.fontface = "bold", title.position = c("LEFT", "TOP"), 
+            legend.text.size = 0.8, legend.title.size = 1.25, title.size = 10)+ 
   tm_shape(stations)+
-  tm_dots(size= 0.3, title= "NWS Weather Stations", col= "red")
+  tm_dots(size= 0.25, title= "NWS Weather Stations", col= "red")
+tmap_voronoi
+
 
 proj_flash <- st_transform(flash_comb, 26918)
 comb_event_v <- st_join(proj_flash, spat_vstat)
@@ -654,9 +663,12 @@ image_write(image = anomaly_gif,
 
 ########################correlogram######################
 sum_prcp_v6 <- st_sf(sum_prcp_v5)
-anom_mar_21 <- sum_prcp_v6 %>% 
-  filter(month==3 & year==2021)
-anom_mar_21 <- st_as_sf(anom_mar_21)
-spatialEco::correlogram(anom_mar_21, v= anom_mar_21$anomaly, 
-                        dist=4000, ns= 99)
+anom_oct_19 <- sum_prcp_v6 %>% 
+  filter(month==10 & year==2019)
+anom_oct_19 <- st_as_sf(anom_oct_19)
+spatialEco::correlogram(anom_oct_19, v= anom_oct_19$anomaly, 
+                        dist=7000, ns= 99)
 
+sum_prcp_v6 %>%
+  group_by(month, year)%>%
+  spatialEco::correlogram(sum_prcp_v6, v= sum_prcp_v6$anomaly, dist=4000,ns= 99)

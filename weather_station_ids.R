@@ -306,7 +306,7 @@ p_storm_onei <- st_as_sf(loc_storm_onei, coords = c("BEGIN_LON","BEGIN_LAT"),
 city_label <- cny_cities[cny_cities$POP2020 >30000,]
 #map with stations, flash flood, and city labels
 
-tm_shape(stations, unit= "mi")+
+cities_ev_stations <- tm_shape(stations, unit= "mi")+
   tm_dots(size= 0.2, title= "NWS Stations", col="red")+
   tm_shape(p_storm_mad)+
   tm_dots(size= 0.2, title= "Madison Flash Floods", col= "blue")+
@@ -324,13 +324,16 @@ tm_shape(stations, unit= "mi")+
   tm_add_legend(title= "Legend", type = "symbol", labels= c("NWS stations", "Flash flood events"), 
                 col= c("red", "blue"), size=0.5)+
   tm_layout(title= "NWS Stations and flash flood events in Onondaga, Madison, and Oneida County NY", 
-            legend.title.size= 2, legend.text.size= 1.5, 
+            legend.title.size= 1.15, legend.text.size= 0.75, 
             legend.position= c("left", "top"), inner.margins= 0.17, 
             title.fontface = "bold", title.position = c("LEFT", "TOP"), title.size = 1.16)+
   tm_shape(city_label)+
   tm_borders(lwd=0, #line thickness
              lty=1, col= "grey")+
   tm_text("NAME", shadow=TRUE, fontface = "bold", auto.placement = TRUE)
+
+tmap_save(cities_ev_stations, "C:\\Users\\foliv\\Documents\\thesis data\\cities_events_stations.png", 
+            width= 5, height= 5, units= "in", dpi= 200)
 
 #initial attempt at splitting the tricounty areas into polygons for each 
 #weather station
@@ -405,7 +408,7 @@ install.packages("viridis")
 library(viridis)
 tmap_voronoi <- tm_shape(inter_vstat, unit= "mi")+
   tm_borders()+
-  tm_fill(col="total_years", style= "jenks", n=6, 
+  tm_fill(col="total_years", style= "jenks", n=5, 
           title= "Total years active", 
           palette = viridis(n = 3, direction = -1, option= "G"))+
   tm_shape(cny)+
@@ -414,9 +417,12 @@ tmap_voronoi <- tm_shape(inter_vstat, unit= "mi")+
   tm_compass(position = c("RIGHT", "bottom"), size = 4)+
   tm_layout(title= "Weather station coverage using Voronoi diagram", 
             inner.margins= 0.17, title.fontface = "bold", title.position = c("LEFT", "TOP"), 
-            legend.text.size = 0.8, legend.title.size = 1.25, title.size = 10)+ 
+            legend.text.size = 0.8, legend.title.size = 1.25)+ 
   tm_shape(stations)+
   tm_dots(size= 0.25, title= "NWS Weather Stations", col= "red")
+
+tmap_save(tmap_voronoi, "C:\\Users\\foliv\\Documents\\thesis data\\voronoi_06.png", 
+            width= 6, height= 5, units= "in", dpi= 200)
 tmap_voronoi
 
 
@@ -460,15 +466,16 @@ for(i in 1:length(month)){
   for_year[[k]] <- for_month[[i]][for_month[[i]]$year == years[k],]
   avg_prcp_ser <- tm_shape(cny, unit= "mi")+
     tm_borders(lwd=2, lty=1, col= "black")+
-    tm_layout(title= month[i])+
+    tm_layout(title= paste0("Month ",month[i],"Year ",years[k]), 
+              inner.margins= 0.17)+
     tm_shape(cny_cities)+
     tm_borders(lwd=1, #line thickness
                lty=1, col= "grey")+ #line type
     tm_shape(for_year[[k]])+
     tm_symbols(size= 0.3, col= "cm_avg_prcp",
                palette = "Blues")+
-    tm_text("cm_avg_prcp", just= "bottom")+
-    tm_scale_bar(position=c("center", "top"), text.size= 1)+
+    tm_text("cm_avg_prcp", just= "bottom", size=0.5)+
+    tm_scale_bar(position=c("LEFT", "BOTTOM"), text.size= 1)+
     tm_compass(position = c("RIGHT", "bottom"), size = 3)
     
   
@@ -479,6 +486,25 @@ for(i in 1:length(month)){
   
 }}
 
+clim_var_ser <- lapply(c("C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_1year_",years,".png", 
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_2year_",years,".png",
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_3year_",years,".png",
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_4year_",years,".png",
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_5year_",years,".png",
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_6year_",years,".png",
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_7year_",years,".png",
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_8year_",years,".png",
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_9year_",years,".png",
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_10year_",years,".png",
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_11year_",years,".png",
+                              "C:\\Users\\foliv\\Documents\\thesis data\\avg_prcp_ser\\month_12year_",years,".png"), image_read)
+join_clim <- image_join(clim_var_ser)
+# animate at 1 frame per second
+clim_gif <- image_animate(join_clim, fps = 4)
+
+# save
+image_write(image = clim_gif,
+            path = "C:\\Users\\foliv\\Documents\\thesis data\\clim_anim.gif")
 
 avg_month <- sum_prcp_v4 %>%
   group_by(month, year) %>%
@@ -494,7 +520,7 @@ sum_prcp_v5 <- inner_join(data.frame(sum_prcp_v4), avg_month,
 sum_prcp_v5$anomaly <- sum_prcp_v5$cm_avg_prcp-sum_prcp_v5$av_month
 #coefficient of variation
 sum_prcp_v5$c.variation <- ((sum_prcp_v5$sd_month/sum_prcp_v5$av_month)*100)
-#plots for each month
+#############################plots for each month's anomaly##########################
 sum_prcp_v5 %>% 
 filter(month==1)%>%
   ggplot(aes(x = as.factor(year), y = anomaly)) +
@@ -642,6 +668,173 @@ sum_prcp_v5 %>%
 
 library(magick)
 anomaly_ser <- lapply(c("C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\1.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\2.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\3.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\4.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\5.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\6.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\7.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\8.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\9.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\10.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\11.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\12.png"), image_read)
+join_anomaly <- image_join(anomaly_ser)
+# animate at 1 frame per second
+anomaly_gif <- image_animate(join_anomaly, fps = 1)
+
+# save
+image_write(image = anomaly_gif,
+            path = "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_anim.gif")
+####################################total monthly precip##############################
+min(sum_prcp_v5$cm_avg_prcp)
+sum_prcp_v5 %>% 
+  filter(month==1)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "January") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==2)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "February") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==3)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "March") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==4)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "April") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==5)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "May") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==6)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "June") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==7)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "July") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==8)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "August") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==9)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "September") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==10)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "October") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==11)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "November") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+sum_prcp_v5 %>% 
+  filter(month==12)%>%
+  ggplot(aes(x = as.factor(year), y = cm_avg_prcp)) +
+  geom_boxplot() +
+  xlab("Year") + 
+  ylab("Total monthly precipitation (cm)") + 
+  labs(title = "December") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                     limits = c(0, 40))+
+  scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
+                   na.translate= FALSE)
+
+library(magick)
+avg_prcp_ser <- lapply(c("C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\1.png",
                         "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\2.png",
                         "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\3.png",
                         "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\4.png",

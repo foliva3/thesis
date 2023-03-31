@@ -386,11 +386,10 @@ for(i in 1:length(year)){
             width= 5, height= 5, units= "in", dpi= 200)
   
 }
-install.packages("ggmap")
+#install.packages("ggmap")
 library(ggmap)
-install.packages("ggvoronoi")
+#install.packages("ggvoronoi")
 library(ggvoronoi)
-voronoi <- voronoi_polygon(prcp_stations,x="x",y="y")
 #voronoi polygons
 # proximity (Voronoi/Thiessen) polygons
 stationsV <- vect(prcp_stations)
@@ -834,25 +833,25 @@ sum_prcp_v5 %>%
                    na.translate= FALSE)
 
 library(magick)
-avg_prcp_ser <- lapply(c("C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\1.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\2.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\3.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\4.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\5.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\6.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\7.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\8.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\9.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\10.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\11.png",
-                        "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_differences\\12.png"), image_read)
-join_anomaly <- image_join(anomaly_ser)
+tot_prcp_ser <- lapply(c("C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\1.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\2.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\3.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\4.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\5.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\6.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\7.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\8.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\9.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\10.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\11.png",
+                        "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_box\\12.png"), image_read)
+join_tot_prcp <- image_join(tot_prcp_ser)
 # animate at 1 frame per second
-anomaly_gif <- image_animate(join_anomaly, fps = 1)
+tot_prcp_gif <- image_animate(join_tot_prcp, fps = 1)
 
 # save
-image_write(image = anomaly_gif,
-            path = "C:\\Users\\foliv\\Documents\\thesis data\\anomaly_anim.gif")
+image_write(image = tot_prcp_gif,
+            path = "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_anim.gif")
 
 ########################correlogram######################
 sum_prcp_v6 <- st_sf(sum_prcp_v5)

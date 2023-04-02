@@ -403,7 +403,7 @@ spat_vstat <- sf::st_as_sf(vstations)
 crop_vstat <- st_crop(spat_vstat, cny)
 inter_vstat <- st_intersection(spat_vstat, cny)
 
-install.packages("viridis")
+#install.packages("viridis")
 library(viridis)
 tmap_voronoi <- tm_shape(inter_vstat, unit= "mi")+
   tm_borders()+
@@ -436,6 +436,12 @@ loc_comb_stat <- prcp_stations[prcp_stations$id %in% distance_wstations,]
 loc_comb_stat <- cbind(loc_comb_stat[,1:24],loc_comb_stat[,27])
 #st_write(loc_comb_stat, "C:\\Users\\foliv\\Documents\\thesis data\\wstations3.shp")
 
+dist_event_stat <- read.csv("C:\\Users\\foliv\\Documents\\thesis data\\w_station_event_dist\\distance.dbf.csv")
+#make summary table for distance between events and stations
+#install.packages('vtable')
+library(vtable)
+sumtable(dist_event_stat, vars=c("Distance_between_event_and_station", "ttl_yrs"))
+#plot(dist_event_stat)
 #################mapping climate variability###################
 #making separate columns for year, month, day
 w_prcp_daily_v2 <- w_prcp_daily %>%
@@ -854,13 +860,29 @@ image_write(image = tot_prcp_gif,
             path = "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_anim.gif")
 
 ########################correlogram######################
+#october 2019
 sum_prcp_v6 <- st_sf(sum_prcp_v5)
 anom_oct_19 <- sum_prcp_v6 %>% 
   filter(month==10 & year==2019)
 anom_oct_19 <- st_as_sf(anom_oct_19)
 spatialEco::correlogram(anom_oct_19, v= anom_oct_19$anomaly, 
-                        dist=7000, ns= 99)
+                        dist=7000, ns= 1000)
+#plot(anom_oct_19["avg_prcp"],axes=TRUE)
+#following code does not work
+#sum_prcp_v6 %>%
+  #group_by(month, year)%>%
+  #spatialEco::correlogram(sum_prcp_v6, v= sum_prcp_v6$anomaly, dist=4000,ns= 99)
 
-sum_prcp_v6 %>%
-  group_by(month, year)%>%
-  spatialEco::correlogram(sum_prcp_v6, v= sum_prcp_v6$anomaly, dist=4000,ns= 99)
+#August 2010
+anom_aug_10 <- sum_prcp_v6 %>% 
+  filter(month==8 & year==2010)
+anom_aug_10 <- st_as_sf(anom_aug_10)
+spatialEco::correlogram(anom_aug_10, v= anom_aug_10$anomaly, 
+                        dist=6000, ns= 1000)
+#plot(anom_aug_10["avg_prcp"],axes=TRUE)
+#july 2010
+anom_aug_10 <- sum_prcp_v6 %>% 
+  filter(month==8 & year==2010)
+anom_aug_10 <- st_as_sf(anom_aug_10)
+spatialEco::correlogram(anom_aug_10, v= anom_aug_10$anomaly, 
+                        dist=6000, ns= 1000)

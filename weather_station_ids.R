@@ -886,3 +886,13 @@ anom_aug_10 <- sum_prcp_v6 %>%
 anom_aug_10 <- st_as_sf(anom_aug_10)
 spatialEco::correlogram(anom_aug_10, v= anom_aug_10$anomaly, 
                         dist=6000, ns= 1000)
+
+#citation("rnoaa")
+#version$version.string
+#citation("spatialEco")
+#citation("sf")
+#citation("ggplot2")
+#citation("tmap")
+#citation("magick")
+#citation("terra")
+#citation("viridis")

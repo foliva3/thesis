@@ -521,6 +521,7 @@ avg_month2 <- avg_month %>%
 avg_month2 <- avg_month2[,1:5]
 sum_prcp_v5 <- inner_join(data.frame(sum_prcp_v4), avg_month, 
                           by= c("month", "year"))
+
 #makes anomaly column
 sum_prcp_v5$anomaly <- sum_prcp_v5$cm_avg_prcp-sum_prcp_v5$av_month
 #coefficient of variation
@@ -860,33 +861,136 @@ image_write(image = tot_prcp_gif,
             path = "C:\\Users\\foliv\\Documents\\thesis data\\tot_prcp_anim.gif")
 
 ########################correlogram######################
-#october 2019
+#october 2005
 sum_prcp_v6 <- st_sf(sum_prcp_v5)
+anom_oct_05 <- sum_prcp_v6 %>% 
+  filter(month==10 & year==2005)
+anom_oct_05 <- st_as_sf(anom_oct_05)
+df_oct_05 <- spatialEco::correlogram(anom_oct_05, v= anom_oct_05$anomaly, 
+                                     dist=3000, ns= 1000)
+df_oct_05[["autocorrelation"]]$dist_km <- df_oct_05[["autocorrelation"]]$dist/1000
+plot_oct_05<- ggplot(df_oct_05[["autocorrelation"]], 
+                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+  geom_line(col='black', linewidth=1)+
+  scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
+                     limits = c(-0.8, 0.8))+
+  scale_x_continuous(breaks= seq(5,100, by=10), 
+                     limits = c(3, 99))+
+  xlab("Distance (kilometers)")+
+  geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
+  theme(axis.text=element_text(size=12), 
+        axis.title= element_text(size=14), 
+        plot.title= element_text(size=14, face="bold"))+
+  labs(title= "October 2005")
+ggsave("oct_05.png", width = 6, height = 4)
+#may 2005
+anom_may_05 <- sum_prcp_v6 %>% 
+  filter(month==5 & year==2005)
+anom_may_05 <- st_as_sf(anom_may_05)
+df_may_05 <- spatialEco::correlogram(anom_may_05, v= anom_may_05$anomaly, 
+                                     dist=3000, ns= 1000)
+df_may_05[["autocorrelation"]]$dist_km <- df_may_05[["autocorrelation"]]$dist/1000
+plot_may_05<- ggplot(df_may_05[["autocorrelation"]], 
+                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+  geom_line(col='black', linewidth=1)+
+  scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
+                     limits = c(-0.8, 0.8))+
+  scale_x_continuous(breaks= seq(5,102, by=15), 
+                     limits = c(3, 102))+
+  xlab("Distance (kilometers)")+
+  geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
+  theme(axis.text=element_text(size=12), 
+        axis.title= element_text(size=14), 
+        plot.title= element_text(size=14, face="bold"))+
+  labs(title= "May 2005")
+ggsave("may_05.png", width = 6, height = 4)
+#october 2019
 anom_oct_19 <- sum_prcp_v6 %>% 
   filter(month==10 & year==2019)
 anom_oct_19 <- st_as_sf(anom_oct_19)
-spatialEco::correlogram(anom_oct_19, v= anom_oct_19$anomaly, 
+df_oct_19 <- spatialEco::correlogram(anom_oct_19, v= anom_oct_19$anomaly, 
                         dist=7000, ns= 1000)
-#plot(anom_oct_19["avg_prcp"],axes=TRUE)
-#following code does not work
-#sum_prcp_v6 %>%
-  #group_by(month, year)%>%
-  #spatialEco::correlogram(sum_prcp_v6, v= sum_prcp_v6$anomaly, dist=4000,ns= 99)
+df_oct_19[["autocorrelation"]]$dist_km <- df_oct_19[["autocorrelation"]]$dist/1000
+plot_oct_19<- ggplot(df_oct_19[["autocorrelation"]], 
+                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+  geom_line(col='black', linewidth=1)+
+  scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
+                    limits = c(-0.8, 0.8))+
+  scale_x_continuous(breaks= seq(14,100, by=14), 
+                     limits = c(7, 105))+
+  xlab("Distance (kilometers)")+
+  geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
+  theme(axis.text=element_text(size=12), 
+        axis.title= element_text(size=14), 
+        plot.title= element_text(size=14, face="bold"))+
+  labs(title= "October 2019")
+#ggsave("oct_19.png", width = 6, height = 4)
 
-#August 2010
-anom_aug_10 <- sum_prcp_v6 %>% 
-  filter(month==8 & year==2010)
-anom_aug_10 <- st_as_sf(anom_aug_10)
-spatialEco::correlogram(anom_aug_10, v= anom_aug_10$anomaly, 
-                        dist=6000, ns= 1000)
-#plot(anom_aug_10["avg_prcp"],axes=TRUE)
-#july 2010
-anom_aug_10 <- sum_prcp_v6 %>% 
-  filter(month==8 & year==2010)
-anom_aug_10 <- st_as_sf(anom_aug_10)
-spatialEco::correlogram(anom_aug_10, v= anom_aug_10$anomaly, 
-                        dist=6000, ns= 1000)
+#March 2010
+anom_mar_10 <- sum_prcp_v6 %>% 
+  filter(month==3 & year==2010)
+anom_mar_10 <- st_as_sf(anom_mar_10)
+df_mar_10 <- spatialEco::correlogram(anom_mar_10, v= anom_mar_10$anomaly, 
+                        dist=3000, ns= 2000)
+df_mar_10[["autocorrelation"]]$dist_km <- df_mar_10[["autocorrelation"]]$dist/1000
+plot_mar_10<- ggplot(df_mar_10[["autocorrelation"]], 
+                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+  geom_line(col='black', linewidth=1)+
+  scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
+                     limits = c(-0.8, 0.8))+
+  scale_x_continuous(breaks= seq(3,108, by=15), 
+                     limits = c(3, 108))+
+  xlab("Distance (kilometers)")+
+  geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
+  theme(axis.text=element_text(size=12), 
+        axis.title= element_text(size=14), 
+        plot.title= element_text(size=14, face="bold"))+
+  labs(title= "March 2010")
+#ggsave("mar_10.png", width = 6, height = 4)
 
+#aug 2019
+anom_aug_19 <- sum_prcp_v6 %>% 
+  filter(month==8 & year==2019)
+anom_aug_19 <- st_as_sf(anom_aug_19)
+df_aug_19 <- spatialEco::correlogram(anom_aug_19, v= anom_aug_19$anomaly, 
+                        dist=6000, ns= 1000)
+df_aug_19[["autocorrelation"]]$dist_km <- df_aug_19[["autocorrelation"]]$dist/1000
+plot_aug_19<- ggplot(df_aug_19[["autocorrelation"]], 
+                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+  geom_line(col='black', linewidth=1)+
+  scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
+                     limits = c(-0.8, 0.8))+
+  scale_x_continuous(breaks= seq(5,113, by=15), 
+                     limits = c(6, 114))+
+  xlab("Distance (kilometers)")+
+  geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
+  theme(axis.text=element_text(size=12), 
+        axis.title= element_text(size=14), 
+        plot.title= element_text(size=14, face="bold"))+
+  labs(title= "August 2019")
+#ggsave("aug_19.png", width = 6, height = 4)
+
+#oct 2010
+anom_oct_10 <- sum_prcp_v6 %>% 
+  filter(month==10 & year==2010)
+anom_oct_10 <- st_as_sf(anom_oct_10)
+df_oct_10 <- spatialEco::correlogram(anom_oct_10, v= anom_oct_10$anomaly, 
+                        dist=6000, ns= 1000)
+df_oct_10[["autocorrelation"]]$dist_km <- df_oct_10[["autocorrelation"]]$dist/1000
+plot_oct_10<- ggplot(df_oct_10[["autocorrelation"]], 
+                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+  geom_line(col='black', linewidth=1)+
+  scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
+                     limits = c(-0.8, 0.8))+
+  scale_x_continuous(breaks= seq(10,120, by=20), 
+                     limits = c(6, 120))+
+  xlab("Distance (kilometers)")+
+  geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
+  theme(axis.text=element_text(size=12), 
+        axis.title= element_text(size=14), 
+        plot.title= element_text(size=14, face="bold"))+
+  labs(title= "October 2010")
+#ggsave("oct_10.png", width = 6, height = 4)
 #citation("rnoaa")
 #version$version.string
 #citation("spatialEco")
@@ -896,3 +1000,30 @@ spatialEco::correlogram(anom_aug_10, v= anom_aug_10$anomaly,
 #citation("magick")
 #citation("terra")
 #citation("viridis")
+help(correlogram)
+###############coefficient of variation interpolate################
+avg_month3 <- sum_prcp_v2 %>%
+  group_by(month, id) %>%
+  summarise(av_month= mean(cm_avg_prcp), 
+            sd_month= sd(cm_avg_prcp), 
+            n_month= n())
+
+avg_month3 <- left_join(sum_prcp_v2, avg_month3, by= c("id"= "id"))
+min(avg_month3$n_month)
+max(avg_month3$n_month)
+#filters out stations with less than 30 years of data
+avg_month4 <- avg_month3 %>% 
+  filter(n_month>=30)
+#coefficient of variation
+avg_month4$c.variation <- ((avg_month4$sd_month/avg_month4$av_month)*100)
+
+#install.packages('gstat')
+library(gstat)
+library(sp) 
+
+bbox <- st_bbox(sum_prcp_v4)
+bbox
+cell_size <- 40
+x <- seq(bbox$xmin, bbox$xmax, by=cell_size)
+y <- seq(bbox$ymin, bbox$ymax, by=cell_size)
+avg_month4_grid <- expand.grid(x=x, y=y)

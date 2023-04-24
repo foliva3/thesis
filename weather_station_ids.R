@@ -1027,3 +1027,4 @@ cell_size <- 40
 x <- seq(bbox$xmin, bbox$xmax, by=cell_size)
 y <- seq(bbox$ymin, bbox$ymax, by=cell_size)
 avg_month4_grid <- expand.grid(x=x, y=y)
+st_write(prcp_stations,"C:\\Users\\foliv\\Documents\\thesis data\\prcp_stations.shp")

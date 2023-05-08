@@ -477,13 +477,29 @@ loc_comb_stat <- cbind(loc_comb_stat[,1:24],loc_comb_stat[,27])
 dist_event_stat <- read.csv("C:\\Users\\foliv\\Documents\\thesis data\\w_station_event_dist\\distance.dbf.csv")
 #make summary table for distance between events and stations####
 #install.packages('vtable')
+#using lubridate to make separate column with event year
+#this will be used to determine which events had an active 
+#station in their voronoi polygon
+dist_event_stat <- dist_event_stat %>% 
+  dplyr::mutate(event.date = lubridate::mdy(BEGIN_D))
+dist_event_stat <- dist_event_stat %>%  
+  dplyr::mutate(year.event = lubridate::year(event.date))
+
+#designates which events had an active station
+#install.packages("data.table")
+library(data.table)
+dist_event_stat$active.stat <- data.table::between(dist_event_stat$year.event,
+                    dist_event_stat$frst_yr,
+                    dist_event_stat$last_yr)
+
 library(vtable)
 dist_event_stat$dist.miles <- dist_event_stat$Distance_between_event_and_station/1209
 num_stations_per_ev <- dist_event_stat %>% group_by(BEGIN_D) %>%tally()
 num_events_per_stat <- dist_event_stat %>% group_by(id) %>%tally()
-sumtable(dist_event_stat, vars=c("dist.miles", "ttl_yrs"), 
+event_stat_sumtable <- dist_event_stat %>% filter(active.stat == TRUE) %>%sumtable(vars=c("dist.miles", "ttl_yrs"), 
          labels= c("Distance between flash flood events and NWS stations (miles)", "Total years weather station was active"),
-         out='csv', file= "C:\\Users\\foliv\\Documents\\thesis data\\summary_tables\\dist_stat_event2")
+         out='csv', file= "C:\\Users\\foliv\\Documents\\thesis data\\summary_tables\\dist_stat_event3")
+event_stat_sumtable
 ggplot(dist_event_stat, aes(x= dist.miles))+
   geom_boxplot()+
   xlab("Distance between flash flood event and NWS station (miles)") + 

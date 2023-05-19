@@ -338,24 +338,24 @@ cities_ev_stations <- tm_shape(cny_cities, unit= "mi", bbox=bbox_new)+
   tm_dots(size= 0.2, title= "Oneida Flash Floods", col= "blue")+
   tm_shape(p_storm_onon)+
   tm_dots(size= 0.2, title= "Onondaga Flash Floods", col= "blue")+
-  tm_scale_bar(position=c("left", "BOTTOM"), text.size= 1)+
-  tm_compass(position = c("RIGHT", "bottom"), size = 3)+
+  tm_scale_bar(position=c("left", "BOTTOM"), text.size = 0.75)+
+  tm_compass(position = c("RIGHT", "bottom"), size = 2.5)+
   tm_add_legend(title= "Legend", type = "symbol", 
                 labels= c("NWS stations", "Flash flood events"), 
                 col= c("red", "blue"), size=0.5)+
-  tm_layout(title= "NWS Stations and flash flood events in Onondaga, Madison, and Oneida County NY", 
-            legend.title.size= 1.15, legend.text.size= 0.75, 
-            legend.position= c("left", "top"), 
-            title.fontface = "bold", inner.margins= 0.08,
-            title.position = c("LEFT", "TOP"), title.size = 10, frame=FALSE)+
+  tm_layout(title= "NWS Stations and flash flood events in \n Onondaga, Madison, and Oneida County NY", 
+            scale= 1, legend.position= c("left", "top"), 
+            title.fontface = "bold",
+            title.position = c("LEFT", "TOP"), frame=FALSE, title.size = 0.75)+
   tm_shape(city_label)+
   tm_borders(lwd=0, #line thickness
              lty=1, col= "grey")+
-  tm_text("NAME", shadow=TRUE, fontface = "bold", auto.placement = TRUE)
+  tm_text("NAME", shadow=TRUE, fontface = "bold", 
+          auto.placement = TRUE, size= 0.75)
 cities_ev_stations
 tmap_save(cities_ev_stations, "C:\\Users\\foliv\\Documents\\thesis data\\cities_events_stations.png", 
-            width= 1204, height= 825, dpi= 200)
-
+            width= 900, height= 900, dpi= 200)
+#legend.title.size= 1, legend.text.size= 0.75, title.size = 0.75, 
 #initial attempt at splitting the tricounty areas into polygons for each 
 #weather station
 #row1 <- loc_storm_mad[1,]
@@ -496,11 +496,11 @@ library(vtable)
 dist_event_stat$dist.miles <- dist_event_stat$Distance_between_event_and_station/1209
 num_stations_per_ev <- dist_event_stat %>% group_by(BEGIN_D) %>%tally()
 num_events_per_stat <- dist_event_stat %>% group_by(id) %>%tally()
-event_stat_sumtable <- dist_event_stat %>% filter(active.stat == TRUE) %>%sumtable(vars=c("dist.miles", "ttl_yrs"), 
-         labels= c("Distance between flash flood events and NWS stations (miles)", "Total years weather station was active"),
+event_stat_sumtable <- dist_event_stat %>% filter(active.stat == TRUE) %>%sumtable(vars= "dist.miles", 
+         labels= "Distance between flash flood events and NWS stations (miles)",
          out='csv', file= "C:\\Users\\foliv\\Documents\\thesis data\\summary_tables\\dist_stat_event3")
 event_stat_sumtable
-ggplot(dist_event_stat, aes(x= dist.miles))+
+dist_event_stat %>% filter(active.stat == TRUE) %>% ggplot(aes(x= dist.miles))+
   geom_boxplot()+
   xlab("Distance between flash flood event and NWS station (miles)") + 
   theme(axis.title.x = element_text(size= 20), 
@@ -508,9 +508,9 @@ ggplot(dist_event_stat, aes(x= dist.miles))+
         axis.title.y=element_blank(),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank())
-ggsave("stations_event_dist.png", width = 8, height = 2)
+ggsave("stations_event_dist2.png", width = 8, height = 2)
 
-         
+
 num_events_per_stat <- inner_join(prcp_stations, num_events_per_stat, by= "id")
 station_label <- num_events_per_stat[num_events_per_stat$n >=6,]
 #plot(dist_event_stat)
@@ -776,8 +776,8 @@ sum_prcp_v5 %>%
   labs(title = "January") + 
   theme(plot.title = element_text(hjust = 0.5), 
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -790,8 +790,8 @@ sum_prcp_v5 %>%
   labs(title = "February") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -804,8 +804,8 @@ sum_prcp_v5 %>%
   labs(title = "March") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -818,8 +818,8 @@ sum_prcp_v5 %>%
   labs(title = "April") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -832,8 +832,8 @@ sum_prcp_v5 %>%
   labs(title = "May") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -846,8 +846,8 @@ sum_prcp_v5 %>%
   labs(title = "June") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -860,8 +860,8 @@ sum_prcp_v5 %>%
   labs(title = "July") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -874,8 +874,8 @@ sum_prcp_v5 %>%
   labs(title = "August") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -888,8 +888,8 @@ sum_prcp_v5 %>%
   labs(title = "September") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -902,8 +902,8 @@ sum_prcp_v5 %>%
   labs(title = "October") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -916,8 +916,8 @@ sum_prcp_v5 %>%
   labs(title = "November") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 sum_prcp_v5 %>% 
@@ -930,8 +930,8 @@ sum_prcp_v5 %>%
   labs(title = "December") + 
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 20)) + 
-  scale_y_continuous(breaks = seq(0, 40, by = 5), 
-                     limits = c(0, 40))+
+  scale_y_continuous(breaks = seq(0, 35, by = 5), 
+                     limits = c(0, 35))+
   scale_x_discrete(breaks = seq(1950, 2021, by= 5), 
                    na.translate= FALSE)
 
@@ -964,15 +964,15 @@ anom_oct_05 <- sum_prcp_v6 %>%
 anom_oct_05 <- st_as_sf(anom_oct_05)
 df_oct_05 <- spatialEco::correlogram(anom_oct_05, v= anom_oct_05$anomaly, 
                                      dist=3000, ns= 1000)
-df_oct_05[["autocorrelation"]]$dist_km <- df_oct_05[["autocorrelation"]]$dist/1000
+df_oct_05[["autocorrelation"]]$dist_mi <- df_oct_05[["autocorrelation"]]$dist/1209
 plot_oct_05<- ggplot(df_oct_05[["autocorrelation"]], 
-                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+                     aes(x = dist_mi, y = autocorrelation, group = 1))+ 
   geom_line(col='black', linewidth=1)+
   scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
                      limits = c(-0.8, 0.8))+
-  scale_x_continuous(breaks= seq(5,100, by=10), 
-                     limits = c(3, 99))+
-  xlab("Distance (kilometers)")+
+  scale_x_continuous(breaks= seq(2,82, by=11), 
+                     limits = c(2, 82))+
+  xlab("Distance (miles)")+
   geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
   theme(axis.text=element_text(size=12), 
         axis.title= element_text(size=14), 
@@ -985,15 +985,15 @@ anom_may_05 <- sum_prcp_v6 %>%
 anom_may_05 <- st_as_sf(anom_may_05)
 df_may_05 <- spatialEco::correlogram(anom_may_05, v= anom_may_05$anomaly, 
                                      dist=3000, ns= 1000)
-df_may_05[["autocorrelation"]]$dist_km <- df_may_05[["autocorrelation"]]$dist/1000
+df_may_05[["autocorrelation"]]$dist_mi <- df_may_05[["autocorrelation"]]$dist/1209
 plot_may_05<- ggplot(df_may_05[["autocorrelation"]], 
-                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+                     aes(x = dist_mi, y = autocorrelation, group = 1))+ 
   geom_line(col='black', linewidth=1)+
   scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
                      limits = c(-0.8, 0.8))+
-  scale_x_continuous(breaks= seq(5,102, by=15), 
-                     limits = c(3, 102))+
-  xlab("Distance (kilometers)")+
+  scale_x_continuous(breaks= seq(2,85, by=11), 
+                     limits = c(2, 85))+
+  xlab("Distance (miles)")+
   geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
   theme(axis.text=element_text(size=12), 
         axis.title= element_text(size=14), 
@@ -1006,21 +1006,21 @@ anom_oct_19 <- sum_prcp_v6 %>%
 anom_oct_19 <- st_as_sf(anom_oct_19)
 df_oct_19 <- spatialEco::correlogram(anom_oct_19, v= anom_oct_19$anomaly, 
                         dist=7000, ns= 1000)
-df_oct_19[["autocorrelation"]]$dist_km <- df_oct_19[["autocorrelation"]]$dist/1000
+df_oct_19[["autocorrelation"]]$dist_mi <- df_oct_19[["autocorrelation"]]$dist/1209
 plot_oct_19<- ggplot(df_oct_19[["autocorrelation"]], 
-                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+                     aes(x = dist_mi, y = autocorrelation, group = 1))+ 
   geom_line(col='black', linewidth=1)+
   scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
                     limits = c(-0.8, 0.8))+
-  scale_x_continuous(breaks= seq(14,100, by=14), 
-                     limits = c(7, 105))+
-  xlab("Distance (kilometers)")+
+  scale_x_continuous(breaks= seq(5,87, by=11), 
+                     limits = c(5, 87))+
+  xlab("Distance (miles)")+
   geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
   theme(axis.text=element_text(size=12), 
         axis.title= element_text(size=14), 
         plot.title= element_text(size=14, face="bold"))+
   labs(title= "October 2019")
-#ggsave("oct_19.png", width = 6, height = 4)
+ggsave("oct_19.png", width = 6, height = 4)
 
 #March 2010
 anom_mar_10 <- sum_prcp_v6 %>% 
@@ -1028,21 +1028,21 @@ anom_mar_10 <- sum_prcp_v6 %>%
 anom_mar_10 <- st_as_sf(anom_mar_10)
 df_mar_10 <- spatialEco::correlogram(anom_mar_10, v= anom_mar_10$anomaly, 
                         dist=3000, ns= 2000)
-df_mar_10[["autocorrelation"]]$dist_km <- df_mar_10[["autocorrelation"]]$dist/1000
+df_mar_10[["autocorrelation"]]$dist_mi <- df_mar_10[["autocorrelation"]]$dist/1209
 plot_mar_10<- ggplot(df_mar_10[["autocorrelation"]], 
-                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+                     aes(x = dist_mi, y = autocorrelation, group = 1))+ 
   geom_line(col='black', linewidth=1)+
   scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
                      limits = c(-0.8, 0.8))+
-  scale_x_continuous(breaks= seq(3,108, by=15), 
-                     limits = c(3, 108))+
-  xlab("Distance (kilometers)")+
+  scale_x_continuous(breaks= seq(2,90, by=11), 
+                     limits = c(2, 90))+
+  xlab("Distance (miles)")+
   geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
   theme(axis.text=element_text(size=12), 
         axis.title= element_text(size=14), 
         plot.title= element_text(size=14, face="bold"))+
   labs(title= "March 2010")
-#ggsave("mar_10.png", width = 6, height = 4)
+ggsave("mar_10.png", width = 6, height = 4)
 
 #aug 2019
 anom_aug_19 <- sum_prcp_v6 %>% 
@@ -1050,21 +1050,21 @@ anom_aug_19 <- sum_prcp_v6 %>%
 anom_aug_19 <- st_as_sf(anom_aug_19)
 df_aug_19 <- spatialEco::correlogram(anom_aug_19, v= anom_aug_19$anomaly, 
                         dist=6000, ns= 1000)
-df_aug_19[["autocorrelation"]]$dist_km <- df_aug_19[["autocorrelation"]]$dist/1000
+df_aug_19[["autocorrelation"]]$dist_mi <- df_aug_19[["autocorrelation"]]$dist/1209
 plot_aug_19<- ggplot(df_aug_19[["autocorrelation"]], 
-                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+                     aes(x = dist_mi, y = autocorrelation, group = 1))+ 
   geom_line(col='black', linewidth=1)+
   scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
                      limits = c(-0.8, 0.8))+
-  scale_x_continuous(breaks= seq(5,113, by=15), 
-                     limits = c(6, 114))+
-  xlab("Distance (kilometers)")+
+  scale_x_continuous(breaks= seq(4,95, by=11), 
+                     limits = c(4, 95))+
+  xlab("Distance (miles)")+
   geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
   theme(axis.text=element_text(size=12), 
         axis.title= element_text(size=14), 
         plot.title= element_text(size=14, face="bold"))+
   labs(title= "August 2019")
-#ggsave("aug_19.png", width = 6, height = 4)
+ggsave("aug_19.png", width = 6, height = 4)
 
 #oct 2010
 anom_oct_10 <- sum_prcp_v6 %>% 
@@ -1072,21 +1072,21 @@ anom_oct_10 <- sum_prcp_v6 %>%
 anom_oct_10 <- st_as_sf(anom_oct_10)
 df_oct_10 <- spatialEco::correlogram(anom_oct_10, v= anom_oct_10$anomaly, 
                         dist=6000, ns= 1000)
-df_oct_10[["autocorrelation"]]$dist_km <- df_oct_10[["autocorrelation"]]$dist/1000
+df_oct_10[["autocorrelation"]]$dist_mi <- df_oct_10[["autocorrelation"]]$dist/1209
 plot_oct_10<- ggplot(df_oct_10[["autocorrelation"]], 
-                     aes(x = dist_km, y = autocorrelation, group = 1))+ 
+                     aes(x = dist_mi, y = autocorrelation, group = 1))+ 
   geom_line(col='black', linewidth=1)+
   scale_y_continuous(breaks = seq(-0.8, 0.8, by = 0.4), 
                      limits = c(-0.8, 0.8))+
-  scale_x_continuous(breaks= seq(10,120, by=20), 
-                     limits = c(6, 120))+
-  xlab("Distance (kilometers)")+
+  scale_x_continuous(breaks= seq(4,100, by=11), 
+                     limits = c(4, 100))+
+  xlab("Distance (miles)")+
   geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.1, fill='blue')+
   theme(axis.text=element_text(size=12), 
         axis.title= element_text(size=14), 
         plot.title= element_text(size=14, face="bold"))+
   labs(title= "October 2010")
-#ggsave("oct_10.png", width = 6, height = 4)
+ggsave("oct_10.png", width = 6, height = 4)
 #citation("rnoaa")
 #version$version.string
 #citation("spatialEco")
@@ -1096,7 +1096,8 @@ plot_oct_10<- ggplot(df_oct_10[["autocorrelation"]],
 #citation("magick")
 #citation("terra")
 #citation("viridis")
-help(correlogram)
+citation("vtable")
+
 ###############coefficient of variation interpolate################
 avg_month3 <- sum_prcp_v2 %>%
   group_by(month, id) %>%
@@ -1212,3 +1213,27 @@ for(i in 1:length(year)){
             width= 6, height= 6, units= "in", dpi= 150)
   
 }
+######histogram for total years of station activity###########
+#summary stats annotations for histogram
+annotations <- data.frame(
+  x = c(round(min(prcp_stations$total_years), 2), 
+        round(mean(prcp_stations$total_years), 2), 
+        round(max(prcp_stations$total_years), 2)),
+  y = c(4, 28, 4),
+  label = c("Min:", "Mean:", "Max:")) 
+
+ggplot(prcp_stations, aes(x=total_years)) + 
+  geom_histogram(color='black', fill= 'tomato', binwidth= 9)+
+  ggtitle("NWS weather stations total years active") +
+  xlab("Years") + 
+  ylab("Count")+
+  theme(plot.title = element_text(face = "bold"), 
+        text = element_text(size = 15))+
+  scale_x_continuous(breaks = seq(0, 135, by= 15), 
+                     limits= c(0, 135))+
+  scale_y_continuous(breaks = seq(0, 30, by= 5), 
+                     limits= c(0, 30))+
+  geom_text(data = annotations, 
+            aes(x = x, y = y, label = paste(label, x)), 
+            size = 4, fontface = "bold")
+ggsave("hist_tot_years.png", width = 6, height = 4)
